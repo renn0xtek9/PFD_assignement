@@ -1,7 +1,8 @@
 add_executable (software_in_the_loop main.cpp)
 
 find_package (Qt6 REQUIRED COMPONENTS Widgets)
-target_link_libraries (software_in_the_loop PRIVATE Qt6::Widgets)
+target_link_libraries (software_in_the_loop PRIVATE Qt6::Widgets
+                                                    primary_flight_display)
 target_sources (
   software_in_the_loop
   PRIVATE

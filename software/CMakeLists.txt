@@ -1,1 +1,2 @@
+add_subdirectory (primary_flight_display)
 add_subdirectory (software_in_the_loop)

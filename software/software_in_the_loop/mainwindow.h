@@ -1,6 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <primary_flight_display/primary_flight_display.h>
+
 #include <QHBoxLayout>
 #include <QMainWindow>
 #include <QWidget>
@@ -16,7 +18,7 @@ class MainWindow : public QMainWindow {
 
  private:
   QHBoxLayout* m_main_layout;
-  QWidget* m_primay_flight_display;
+  PrimaryFlightDisplay* m_primay_flight_display;
   SilCommandPanel* m_sil_command_panel;
 
   void initalizeLayout();
