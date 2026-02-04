@@ -1,0 +1,16 @@
+{
+  "clangd.arguments": [
+    "--compile-commands-dir=${workspaceFolder}/build",
+    "--query-driver=/usr/bin/g++,/usr/bin/clang++,/usr/bin/qmake6",
+    "--background-index",
+    "--pch-storage=memory",
+    "--clang-tidy",
+    "--header-insertion=iwyu",
+    "--header-insertion-decorators",
+    "--all-scopes-completion",
+    "--completion-style=detailed",
+    "--enable-config",
+    "--offset-encoding=utf-16"
+  ],
+  "clangd.path": "/usr/bin/clangd-18"
+}
