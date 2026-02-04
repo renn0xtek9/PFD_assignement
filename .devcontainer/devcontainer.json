@@ -1,46 +1,47 @@
 {
-    "name": "PFD assignement dev environment",
-    "runArgs": [
-        "-e",
-        "DISPLAY",
-        "-v",
-        "/tmp/.X11-unix:/tmp/.X11-unix",
-        "--network=host"
-    ],
-    "build": {
-        "dockerfile": "Dockerfile",
-        "options": [
-            "--network=host"
-        ]
-    },
-    "customizations": {
-        "vscode": {
-            "extensions": [
-                "theqtcompany.qt-core",
-                "theqtcompany.qt-cpp",
-                "theqtcompany.qt-ui",
-                "theqtcompany.qt-cpp-pack",
-                "ms-vscode.cmake-tools",
-                "ms-vscode.cpptools",
-                "ms-vscode.cpptools-extension-pack",
-                "ms-vscode.cpptools-themes",
-                "llvm-vs-code-extensions.vscode-clangd",
-                "github.vscode-pull-request-github",
-                "github.vscode-github-actions",
-                "github.copilot",
-            ]
-        }
-    },
-    "mounts": [
-        "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached",
-        "source=${localEnv:HOME}/.gitconfig,target=/home/vscode/.gitconfig,type=bind,consistency=cached",
-    ],
-    "features": {
-        "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
-            "enableNonRootDocker": true
-        }
-    },
-    "remoteEnv": {
-        "GH_TOKEN": "${localEnv:GH_TOKEN}"
+  "name": "PFD assignement dev environment",
+  "runArgs": [
+    "-e",
+    "DISPLAY",
+    "-v",
+    "/tmp/.X11-unix:/tmp/.X11-unix",
+    "--network=host"
+  ],
+  "build": {
+    "dockerfile": "Dockerfile",
+    "options": [
+      "--network=host"
+    ]
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "theqtcompany.qt-core",
+        "theqtcompany.qt-cpp",
+        "theqtcompany.qt-ui",
+        "theqtcompany.qt-cpp-pack",
+        "ms-vscode.cmake-tools",
+        "ms-vscode.cpptools",
+        "ms-vscode.cpptools-extension-pack",
+        "ms-vscode.cpptools-themes",
+        "llvm-vs-code-extensions.vscode-clangd",
+        "github.vscode-pull-request-github",
+        "github.vscode-github-actions",
+        "github.copilot",
+      ]
     }
+  },
+  "postCreateCommand": "pre-commit install",
+  "mounts": [
+    "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.gitconfig,target=/home/vscode/.gitconfig,type=bind,consistency=cached",
+  ],
+  "features": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
+      "enableNonRootDocker": true
+    }
+  },
+  "remoteEnv": {
+    "GH_TOKEN": "${localEnv:GH_TOKEN}"
+  }
 }
