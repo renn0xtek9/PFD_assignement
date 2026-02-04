@@ -7,3 +7,11 @@ repos:
     rev: v14.0.6
     hooks:
     - id: clang-format
+  - repo: https://github.com/DavidAnson/markdownlint-cli2
+    rev: v0.20.0
+    hooks:
+    - id: markdownlint-cli2
+      name: markdownlint-cli2
+      description: markdownlint-cli2
+      files: \.(md|mdown|markdown)$
+      args: [--fix]
