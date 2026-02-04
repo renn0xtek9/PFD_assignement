@@ -36,3 +36,9 @@
 ```cpp
 void updateAttitude(const QQuaternion& quaternion) noexcept
 ```
+
+- The Simulation tool shall implement this signal method
+
+```cpp
+void attitudeChanged(QQuaternion quaternion)
+```

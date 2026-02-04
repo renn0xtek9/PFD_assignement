@@ -2,6 +2,7 @@
 
 #include <qboxlayout.h>
 #include <qnamespace.h>
+#include <qquaternion.h>
 #include <qwidget.h>
 
 #include <QSlider>
@@ -23,6 +24,9 @@ QSlider* SilCommandPanel::initializeAngleSlider(double min, double max) {
   result->setMaximum(static_cast<int>(max));
   result->setMinimum(static_cast<int>(min));
   result->setOrientation(Qt::Horizontal);
+
+  connect(result, &QSlider::valueChanged, this, &SilCommandPanel::computeAndEmitQuaternion);
+
   return result;
 }
 
@@ -35,4 +39,10 @@ void SilCommandPanel::initalizeLayout() {
   this->layout()->addWidget(m_yaw_angle_slider);
   this->layout()->addWidget(&m_pitch_label);
   this->layout()->addWidget(m_pitch_angle_slider);
+}
+
+void SilCommandPanel::computeAndEmitQuaternion() {
+  QQuaternion quaternion = QQuaternion::fromEulerAngles(m_pitch_angle_slider->value(), m_yaw_angle_slider->value(),
+                                                        m_roll_angle_slider->value());
+  emit attitudeChanged(quaternion);
 }

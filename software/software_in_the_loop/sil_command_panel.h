@@ -1,6 +1,7 @@
 #ifndef SIL_COMMAND_PANEL_H
 #define SIL_COMMAND_PANEL_H
 #include <QLabel>
+#include <QQuaternion>
 #include <QSlider>
 #include <QWidget>
 class SilCommandPanel : public QWidget {
@@ -8,6 +9,9 @@ class SilCommandPanel : public QWidget {
  public:
   explicit SilCommandPanel(QWidget* parent = nullptr);
   ~SilCommandPanel();
+
+ signals:
+  void attitudeChanged(QQuaternion quaternion);
 
  private:
   QSlider* m_roll_angle_slider{};
@@ -21,6 +25,9 @@ class SilCommandPanel : public QWidget {
   QSlider* initializeAngleSlider(double min, double max);
 
   void initalizeLayout();
+
+ private slots:
+  void computeAndEmitQuaternion();
 };
 
 #endif  // SIL_COMMAND_PANEL_H
