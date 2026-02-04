@@ -1,7 +1,7 @@
 add_library (primary_flight_display primary_flight_display.cpp)
 
 find_package (Qt6 REQUIRED COMPONENTS Widgets)
-target_link_libraries (primary_flight_display PRIVATE Qt6::Widgets)
+target_link_libraries (primary_flight_display PRIVATE Qt6::Widgets Qt6::Gui)
 target_sources (
   primary_flight_display
   PUBLIC
