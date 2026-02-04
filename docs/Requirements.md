@@ -22,6 +22,7 @@
 ## Validation
 
 - A simulation tool shall be implemented to simulate aircraft attitude.
+- The simulation tool shall have slider to manually set roll pitch and yaw angle of the aicraft
 - The PFD shall update in real time with every changes entered in the simulation tool.
 
 ## Software requirement
