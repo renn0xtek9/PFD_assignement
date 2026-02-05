@@ -1,5 +1,7 @@
 #ifndef PRIMARY_FLIGHT_DISPLAY_H
 #define PRIMARY_FLIGHT_DISPLAY_H
+#include <qquaternion.h>
+
 #include <QWidget>
 
 class PrimaryFlightDisplay : public QWidget {
@@ -7,6 +9,9 @@ class PrimaryFlightDisplay : public QWidget {
  public:
   explicit PrimaryFlightDisplay(QWidget* parent = nullptr);
   ~PrimaryFlightDisplay();
+
+ public slots:
+  void updateAttitude(const QQuaternion& quaternion) noexcept;
 
  protected:
   void paintEvent(QPaintEvent* event) override;
@@ -17,7 +22,10 @@ class PrimaryFlightDisplay : public QWidget {
 
   QPoint m_center_point{};
 
+  QQuaternion m_quaternion{};
+
   void drawAircraftShape(QPainter& painter);
   void drawOuterCircle(QPainter& painter);
+  void drawYawIndicator(QPainter& painter);
 };
 #endif

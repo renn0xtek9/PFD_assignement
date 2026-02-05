@@ -6,6 +6,7 @@
 #include <QHBoxLayout>
 #include <QWidget>
 
+#include "primary_flight_display/primary_flight_display.h"
 #include "sil_command_panel.h"
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
@@ -13,6 +14,9 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
   m_primay_flight_display = new PrimaryFlightDisplay(this);
 
   this->setWindowTitle("Primary Flight Display validation");
+
+  connect(m_sil_command_panel, &SilCommandPanel::attitudeChanged, m_primay_flight_display,
+          &PrimaryFlightDisplay::updateAttitude);
 
   initalizeLayout();
 }

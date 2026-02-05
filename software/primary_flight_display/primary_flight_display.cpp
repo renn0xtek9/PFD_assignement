@@ -1,5 +1,6 @@
 #include <primary_flight_display/primary_flight_display.h>
 #include <qbrush.h>
+#include <qglobal.h>
 #include <qnamespace.h>
 #include <qtransform.h>
 #include <qwidget.h>
@@ -21,6 +22,11 @@ PrimaryFlightDisplay::PrimaryFlightDisplay(QWidget* parent) : QWidget(parent) {
 PrimaryFlightDisplay::~PrimaryFlightDisplay() {
 }
 
+void PrimaryFlightDisplay::updateAttitude(const QQuaternion& quaternion) noexcept {
+  m_quaternion = quaternion;
+  update();
+}
+
 void PrimaryFlightDisplay::paintEvent(QPaintEvent* event) {
   Q_UNUSED(event);
   QPainter painter(this);
@@ -32,6 +38,7 @@ void PrimaryFlightDisplay::paintEvent(QPaintEvent* event) {
 
   drawAircraftShape(painter);
   drawOuterCircle(painter);
+  drawYawIndicator(painter);
 }
 
 void PrimaryFlightDisplay::drawAircraftShape(QPainter& painter) {
@@ -68,4 +75,19 @@ void PrimaryFlightDisplay::drawOuterCircle(QPainter& painter) {
   painter.setBrush(Qt::NoBrush);
   painter.setPen(QPen(Qt::black, 5));
   painter.drawPath(outer_circle_path);
+}
+
+void PrimaryFlightDisplay::drawYawIndicator(QPainter& painter) {
+  painter.save();
+  auto top_point_y{m_center_y};
+  QPoint top_of_triangle(0, top_point_y);
+  QPoint bottom_left_triangle(-15, top_point_y - 15);
+  QPoint bottom_right_triangle(+15, top_point_y - 15);
+
+  auto yaw_angle = m_quaternion.toEulerAngles().y();
+  painter.translate(m_center_point);
+  painter.rotate(static_cast<qreal>(yaw_angle));
+  painter.drawPolygon(QPolygon({top_of_triangle, bottom_left_triangle, bottom_right_triangle}));
+
+  painter.restore();
 }
