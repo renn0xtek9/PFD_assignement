@@ -29,10 +29,10 @@ struct PrimaryFlightDisplayConfig {
   QColor graduation_color{Qt::white};      ///< Color of graduation
 
   // Ground and sky display
-  QColor sky_color_at_horizon{Qt::blue};                ///< Color of the sky near horizon
-  QColor sky_color_at_veritcal{Qt::black};              ///< Color of the sky near vertical
-  QColor ground_color_at_horizon{QColor(165, 42, 42)};  ///< Color of the ground near horizon
-  QColor ground_color_at_veritcal{QColor(150, 75, 0)};  ///< Color of the ground near vertical
+  QColor sky_color_at_horizon{Qt::blue};                 ///< Color of the sky near horizon
+  QColor sky_color_at_veritcal{Qt::black};               ///< Color of the sky near vertical
+  QColor ground_color_at_horizon{QColor(150, 75, 0)};    ///< Color of the ground near horizon
+  QColor ground_color_at_vertical{QColor(165, 42, 42)};  ///< Color of the ground near vertical
 
   // Yaw display
   int yaw_indicator_size{15};              ///< Size of the triangle incdicating Yaw

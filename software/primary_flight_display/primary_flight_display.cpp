@@ -107,14 +107,14 @@ void PrimaryFlightDisplay::drawPitchIndictator(QPainter& painter) {
   painter.save();
   auto pitch_angle_deg = m_quaternion.toEulerAngles().x();
   auto roll_angle_deg = m_quaternion.toEulerAngles().z();
-  const double horizon_height_px{m_center_y + pitch_angle_deg * m_pfd_pitch_resolution};
+  const qreal horizon_height_px{m_center_y + pitch_angle_deg * m_pfd_pitch_resolution};
 
   clipPainterInsideInstrument(painter);
 
   painter.translate(m_center_point);
   painter.rotate(roll_angle_deg);
   painter.translate(-m_center_point);
-  painter.translate(0, static_cast<qreal>(horizon_height_px));
+  painter.translate(0, horizon_height_px);
 
   QPoint sky_top_left(m_left_x, -180 * m_pfd_pitch_resolution);
   QPoint horizon_right_point(m_right_x, 0);
@@ -125,7 +125,7 @@ void PrimaryFlightDisplay::drawPitchIndictator(QPainter& painter) {
   drawRectangleWithGradient(painter, sky_top_left, horizon_right_point, m_config.sky_color_at_horizon,
                             m_config.sky_color_at_veritcal);
   drawRectangleWithGradient(painter, horizon_left_point, ground_bottom_right, m_config.ground_color_at_horizon,
-                            m_config.ground_color_at_veritcal);
+                            m_config.ground_color_at_vertical);
 
   // Draw horizon and graduations
   painter.setPen(QPen(m_config.graduation_color, m_config.graduation_thickness));
