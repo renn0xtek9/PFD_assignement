@@ -9,11 +9,17 @@
 #include <QVBoxLayout>
 
 SilCommandPanel::SilCommandPanel(QWidget* parent) : QWidget(parent) {
-  m_roll_angle_slider = initializeAngleSlider(-90, 90);
-  m_pitch_angle_slider = initializeAngleSlider(-90, 90);
-  m_yaw_angle_slider = initializeAngleSlider(-180, 180);
+  m_roll_angle_slider = initializeAngleSlider(-180, 180);
+  m_pitch_angle_slider = initializeAngleSlider(-180, 180);
+  m_yaw_angle_slider = initializeAngleSlider(-360, 360);
 
   initalizeLayout();
+  connect(m_pitch_angle_slider, &QSlider::valueChanged, this, &SilCommandPanel::updatePitchAngleLabel);
+  connect(m_roll_angle_slider, &QSlider::valueChanged, this, &SilCommandPanel::updateRollAngleLabel);
+  connect(m_yaw_angle_slider, &QSlider::valueChanged, this, &SilCommandPanel::updateYawAngleLabel);
+  updatePitchAngleLabel();
+  updateYawAngleLabel();
+  updateRollAngleLabel();
 }
 
 SilCommandPanel::~SilCommandPanel() {
@@ -35,14 +41,25 @@ void SilCommandPanel::initalizeLayout() {
   this->setLayout(new QVBoxLayout());
   this->layout()->addWidget(&m_roll_label);
   this->layout()->addWidget(m_roll_angle_slider);
-  this->layout()->addWidget(&m_yaw_label);
-  this->layout()->addWidget(m_yaw_angle_slider);
   this->layout()->addWidget(&m_pitch_label);
   this->layout()->addWidget(m_pitch_angle_slider);
+  this->layout()->addWidget(&m_yaw_label);
+  this->layout()->addWidget(m_yaw_angle_slider);
 }
 
 void SilCommandPanel::computeAndEmitQuaternion() {
   QQuaternion quaternion = QQuaternion::fromEulerAngles(m_pitch_angle_slider->value(), m_yaw_angle_slider->value(),
                                                         m_roll_angle_slider->value());
   emit attitudeChanged(quaternion);
+}
+
+void SilCommandPanel::updatePitchAngleLabel() {
+  m_pitch_label.setText(QString("Pitch angle: ") + QString::number(m_pitch_angle_slider->value()));
+}
+
+void SilCommandPanel::updateYawAngleLabel() {
+  m_yaw_label.setText(QString("Yaw angle: ") + QString::number(m_yaw_angle_slider->value()));
+}
+void SilCommandPanel::updateRollAngleLabel() {
+  m_roll_label.setText(QString("Roll angle: ") + QString::number(m_roll_angle_slider->value()));
 }

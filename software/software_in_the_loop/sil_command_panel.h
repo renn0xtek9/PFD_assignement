@@ -18,9 +18,9 @@ class SilCommandPanel : public QWidget {
   QSlider* m_yaw_angle_slider{};
   QSlider* m_pitch_angle_slider{};
 
-  QLabel m_roll_label{"Roll angle"};
-  QLabel m_yaw_label{"Yaw angle"};
-  QLabel m_pitch_label{"Pitch angle"};
+  QLabel m_roll_label{"Roll angle: "};
+  QLabel m_yaw_label{"Yaw angle: "};
+  QLabel m_pitch_label{"Pitch angle: "};
 
   QSlider* initializeAngleSlider(double min, double max);
 
@@ -28,6 +28,9 @@ class SilCommandPanel : public QWidget {
 
  private slots:
   void computeAndEmitQuaternion();
+  void updatePitchAngleLabel();
+  void updateRollAngleLabel();
+  void updateYawAngleLabel();
 };
 
 #endif  // SIL_COMMAND_PANEL_H
