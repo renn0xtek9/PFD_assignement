@@ -60,8 +60,6 @@ class PrimaryFlightDisplay : public QWidget {
   int m_right_x{};
   double m_pfd_pitch_resolution{};
 
-  const double m_pfd_field_of_view_deg{60};  // At 0 degree pitch we visualize from -30 to +30
-
   QPoint m_center_point{};
 
   QQuaternion m_quaternion{};
@@ -73,6 +71,12 @@ class PrimaryFlightDisplay : public QWidget {
   void drawYawIndicator(QPainter& painter);
   void drawPitchIndictator(QPainter& painter);
   void drawAnglesGraduations(QPainter& painter);
+
+  void drawRectangleWithGradient(QPainter& painter,
+                                 const QPoint& top_left,
+                                 const QPoint& bottom_right,
+                                 const QColor& color_at_horizon,
+                                 const QColor& color_at_vertical);
 
   void applyRoll(QPainter& painter);
 
