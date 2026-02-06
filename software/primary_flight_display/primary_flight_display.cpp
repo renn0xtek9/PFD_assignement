@@ -98,11 +98,18 @@ void PrimaryFlightDisplay::drawYawIndicator(QPainter& painter) {
   painter.restore();
 }
 
+void PrimaryFlightDisplay::clipPainterInsideInstrument(QPainter& painter) {
+  QPainterPath clip_path;
+  clip_path.addEllipse(QPointF(m_center_x, m_center_y), m_radius, m_radius);
+  painter.setClipPath(clip_path);
+}
 void PrimaryFlightDisplay::drawPitchIndictator(QPainter& painter) {
   painter.save();
   auto pitch_angle_deg = m_quaternion.toEulerAngles().x();
   qDebug() << " Pitch angle  " << pitch_angle_deg;
   const double horizon_height_px{m_center_y + pitch_angle_deg * m_pfd_pitch_resolution};
+
+  clipPainterInsideInstrument(painter);
 
   QPoint horizontal_line_left(m_left_x, 0);
   QPoint horizontal_line_right(m_right_x, 0);

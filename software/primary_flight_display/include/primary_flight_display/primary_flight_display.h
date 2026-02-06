@@ -34,5 +34,7 @@ class PrimaryFlightDisplay : public QWidget {
   void drawYawIndicator(QPainter& painter);
   void drawPitchIndictator(QPainter& painter);
   void drawAnglesGraduations(QPainter& painter);
+
+  void clipPainterInsideInstrument(QPainter& painter);
 };
 #endif
