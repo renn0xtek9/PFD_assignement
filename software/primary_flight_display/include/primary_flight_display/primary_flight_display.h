@@ -19,6 +19,9 @@ class PrimaryFlightDisplay : public QWidget {
   int m_center_x{};
   int m_center_y{};
   int m_radius{};
+  int m_left_x{};
+  int m_right_x{};
+  double m_pfd_pitch_resolution{};
 
   QPoint m_center_point{};
 
@@ -27,5 +30,7 @@ class PrimaryFlightDisplay : public QWidget {
   void drawAircraftShape(QPainter& painter);
   void drawOuterCircle(QPainter& painter);
   void drawYawIndicator(QPainter& painter);
+  void drawPitchIndictator(QPainter& painter);
+  void drawAnglesGraduations(QPainter& painter);
 };
 #endif

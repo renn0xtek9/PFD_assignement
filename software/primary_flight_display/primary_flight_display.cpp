@@ -8,6 +8,8 @@
 #include <QDebug>
 #include <QPainter>
 #include <QPainterPath>
+#include <algorithm>
+#include <vector>
 
 namespace {
 int toSixteenthOfDegree(int degree) {
@@ -29,13 +31,18 @@ void PrimaryFlightDisplay::updateAttitude(const QQuaternion& quaternion) noexcep
 
 void PrimaryFlightDisplay::paintEvent(QPaintEvent* event) {
   Q_UNUSED(event);
+  constexpr double PFD_FIELD_OF_VIEW_DEG{60};  // At 0 degree pitch we visualize from -30 to +30
   QPainter painter(this);
   m_radius = qMin(width(), height()) / 2;
   m_center_x = width() / 2;
   m_center_y = height() / 2;
   m_center_point.setX(m_center_x);
   m_center_point.setY(m_center_y);
+  m_pfd_pitch_resolution = static_cast<double>(2 * m_radius) / PFD_FIELD_OF_VIEW_DEG;
+  m_left_x = m_center_x - m_radius;
+  m_right_x = m_center_x + m_radius;
 
+  drawPitchIndictator(painter);
   drawAircraftShape(painter);
   drawOuterCircle(painter);
   drawYawIndicator(painter);
@@ -90,4 +97,46 @@ void PrimaryFlightDisplay::drawYawIndicator(QPainter& painter) {
   painter.drawPolygon(QPolygon({top_of_triangle, bottom_left_triangle, bottom_right_triangle}));
 
   painter.restore();
+}
+
+void PrimaryFlightDisplay::drawPitchIndictator(QPainter& painter) {
+  painter.save();
+  auto pitch_angle_deg = m_quaternion.toEulerAngles().x();
+  const double horizon_height_px{m_center_y + pitch_angle_deg * m_pfd_pitch_resolution};
+
+  QPoint horizontal_line_left(m_left_x, m_center_y);
+  QPoint horizontal_line_right(m_right_x, m_center_y);
+
+  painter.setPen(QPen(Qt::red, 2));
+  painter.drawLine(horizontal_line_left, horizontal_line_right);
+
+  drawAnglesGraduations(painter);
+
+  painter.restore();
+}
+
+void PrimaryFlightDisplay::drawAnglesGraduations(QPainter& painter) {
+  std::vector<int> graduation_angles_deg{};
+  for (int graduation_angle_deg = -90; graduation_angle_deg <= 90; graduation_angle_deg += 5) {
+    graduation_angles_deg.emplace_back(graduation_angle_deg);
+  }
+
+  constexpr int MAIN_GRADUATION_WIDTH{80};
+  constexpr int SECONDARY_GRADUATION_WIDTH{50};
+
+  for (const auto& angle : graduation_angles_deg) {
+    auto graduation_width = MAIN_GRADUATION_WIDTH;
+    if ((angle % 10) != 0) {
+      graduation_width = SECONDARY_GRADUATION_WIDTH;
+    }
+
+    const int graduation_left_px{m_center_x - graduation_width / 2};
+    const int graduation_right_px{m_center_x + graduation_width / 2};
+
+    int graduation_height_px = angle * m_pfd_pitch_resolution;
+    QPoint left_point(graduation_left_px, graduation_height_px);
+    QPoint right_point(graduation_right_px, graduation_height_px);
+    painter.setPen(QPen(Qt::red, 2));
+    painter.drawLine(left_point, right_point);
+  }
 }
