@@ -31,14 +31,14 @@ void PrimaryFlightDisplay::updateAttitude(const QQuaternion& quaternion) noexcep
 
 void PrimaryFlightDisplay::paintEvent(QPaintEvent* event) {
   Q_UNUSED(event);
-  constexpr double PFD_FIELD_OF_VIEW_DEG{60};  // At 0 degree pitch we visualize from -30 to +30
+
   QPainter painter(this);
   m_radius = qMin(width(), height()) / 2;
   m_center_x = width() / 2;
   m_center_y = height() / 2;
   m_center_point.setX(m_center_x);
   m_center_point.setY(m_center_y);
-  m_pfd_pitch_resolution = static_cast<double>(2 * m_radius) / PFD_FIELD_OF_VIEW_DEG;
+  m_pfd_pitch_resolution = static_cast<double>(2 * m_radius) / m_pfd_field_of_view_deg;
   m_left_x = m_center_x - m_radius;
   m_right_x = m_center_x + m_radius;
 
@@ -102,22 +102,25 @@ void PrimaryFlightDisplay::drawYawIndicator(QPainter& painter) {
 void PrimaryFlightDisplay::drawPitchIndictator(QPainter& painter) {
   painter.save();
   auto pitch_angle_deg = m_quaternion.toEulerAngles().x();
+  qDebug() << " Pitch angle  " << pitch_angle_deg;
   const double horizon_height_px{m_center_y + pitch_angle_deg * m_pfd_pitch_resolution};
 
-  QPoint horizontal_line_left(m_left_x, m_center_y);
-  QPoint horizontal_line_right(m_right_x, m_center_y);
+  QPoint horizontal_line_left(m_left_x, 0);
+  QPoint horizontal_line_right(m_right_x, 0);
 
-  QPoint sky_top_left(m_left_x, m_center_y - 90 * m_pfd_pitch_resolution);
-  QPoint sky_top_middle(m_right_x - (m_right_x - m_left_x) / 2, m_center_y - 90 * m_pfd_pitch_resolution);
-  QPoint ground_bottom_middle(m_right_x - (m_right_x - m_left_x) / 2, m_center_y + 90 * m_pfd_pitch_resolution);
+  QPoint sky_top_left(m_left_x, -180 * m_pfd_pitch_resolution);
+  QPoint sky_top_middle(m_right_x - (m_right_x - m_left_x) / 2, sky_top_left.y());
+  QPoint ground_bottom_middle(m_right_x - (m_right_x - m_left_x) / 2, 180 * m_pfd_pitch_resolution);
   QPoint ground_bottom_right(horizontal_line_right.x(), ground_bottom_middle.y());
 
   // Draw sky
   painter.setPen(Qt::NoPen);
 
-  QLinearGradient sky_gradient(sky_top_middle, QPoint(sky_top_middle.x(), horizontal_line_right.y()));
+  painter.translate(0, static_cast<qreal>(horizon_height_px));
 
-  sky_gradient.setColorAt(0.0, Qt::black);
+  QLinearGradient sky_gradient(sky_top_middle, QPoint(sky_top_middle.x(), horizontal_line_right.y()));
+  sky_gradient.setColorAt(0.0, Qt::blue);
+  sky_gradient.setColorAt(0.5, Qt::black);
   sky_gradient.setColorAt(1.0, Qt::blue);
   painter.setBrush(sky_gradient);
   painter.drawRect(QRect(sky_top_left, horizontal_line_right));
@@ -126,7 +129,8 @@ void PrimaryFlightDisplay::drawPitchIndictator(QPainter& painter) {
   // Draw ground
   QLinearGradient ground_gradient(QPoint(ground_bottom_middle.x(), horizontal_line_right.y()), ground_bottom_middle);
   ground_gradient.setColorAt(0.0, QColor(165, 42, 42));
-  ground_gradient.setColorAt(1.0, QColor(150, 75, 0));
+  ground_gradient.setColorAt(0.5, QColor(150, 75, 0));
+  ground_gradient.setColorAt(1.0, QColor(165, 42, 42));
   painter.setBrush(ground_gradient);
   painter.drawRect(QRect(horizontal_line_left, ground_bottom_right));
   painter.setBrush(Qt::NoBrush);
@@ -141,7 +145,9 @@ void PrimaryFlightDisplay::drawPitchIndictator(QPainter& painter) {
 
 void PrimaryFlightDisplay::drawAnglesGraduations(QPainter& painter) {
   std::vector<int> graduation_angles_deg{};
-  for (int graduation_angle_deg = -90; graduation_angle_deg <= 90; graduation_angle_deg += 5) {
+
+  const int angle_max_deg{110};  // purposedly beyond 90 degree to display additional graduation when vertical
+  for (int graduation_angle_deg = -angle_max_deg; graduation_angle_deg <= angle_max_deg; graduation_angle_deg += 5) {
     graduation_angles_deg.emplace_back(graduation_angle_deg);
   }
 

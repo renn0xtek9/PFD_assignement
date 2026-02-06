@@ -23,6 +23,8 @@ class PrimaryFlightDisplay : public QWidget {
   int m_right_x{};
   double m_pfd_pitch_resolution{};
 
+  const double m_pfd_field_of_view_deg{60};  // At 0 degree pitch we visualize from -30 to +30
+
   QPoint m_center_point{};
 
   QQuaternion m_quaternion{};
