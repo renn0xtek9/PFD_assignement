@@ -107,9 +107,33 @@ void PrimaryFlightDisplay::drawPitchIndictator(QPainter& painter) {
   QPoint horizontal_line_left(m_left_x, m_center_y);
   QPoint horizontal_line_right(m_right_x, m_center_y);
 
-  painter.setPen(QPen(Qt::red, 2));
-  painter.drawLine(horizontal_line_left, horizontal_line_right);
+  QPoint sky_top_left(m_left_x, m_center_y - 90 * m_pfd_pitch_resolution);
+  QPoint sky_top_middle(m_right_x - (m_right_x - m_left_x) / 2, m_center_y - 90 * m_pfd_pitch_resolution);
+  QPoint ground_bottom_middle(m_right_x - (m_right_x - m_left_x) / 2, m_center_y + 90 * m_pfd_pitch_resolution);
+  QPoint ground_bottom_right(horizontal_line_right.x(), ground_bottom_middle.y());
 
+  // Draw sky
+  painter.setPen(Qt::NoPen);
+
+  QLinearGradient sky_gradient(sky_top_middle, QPoint(sky_top_middle.x(), horizontal_line_right.y()));
+
+  sky_gradient.setColorAt(0.0, Qt::black);
+  sky_gradient.setColorAt(1.0, Qt::blue);
+  painter.setBrush(sky_gradient);
+  painter.drawRect(QRect(sky_top_left, horizontal_line_right));
+  painter.setBrush(Qt::NoBrush);
+
+  // Draw ground
+  QLinearGradient ground_gradient(QPoint(ground_bottom_middle.x(), horizontal_line_right.y()), ground_bottom_middle);
+  ground_gradient.setColorAt(0.0, QColor(165, 42, 42));
+  ground_gradient.setColorAt(1.0, QColor(150, 75, 0));
+  painter.setBrush(ground_gradient);
+  painter.drawRect(QRect(horizontal_line_left, ground_bottom_right));
+  painter.setBrush(Qt::NoBrush);
+
+  // Draw horizon and graduations
+  painter.setPen(QPen(Qt::white, 2));
+  painter.drawLine(horizontal_line_left, horizontal_line_right);
   drawAnglesGraduations(painter);
 
   painter.restore();
@@ -136,7 +160,6 @@ void PrimaryFlightDisplay::drawAnglesGraduations(QPainter& painter) {
     int graduation_height_px = angle * m_pfd_pitch_resolution;
     QPoint left_point(graduation_left_px, graduation_height_px);
     QPoint right_point(graduation_right_px, graduation_height_px);
-    painter.setPen(QPen(Qt::red, 2));
     painter.drawLine(left_point, right_point);
   }
 }
