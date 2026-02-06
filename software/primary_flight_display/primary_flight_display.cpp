@@ -8,9 +8,8 @@
 #include <QDebug>
 #include <QPainter>
 #include <QPainterPath>
-#include <algorithm>
+#include <QRect>
 #include <vector>
-
 namespace {
 int toSixteenthOfDegree(int degree) {
   return 16 * degree;
@@ -153,6 +152,7 @@ void PrimaryFlightDisplay::drawAnglesGraduations(QPainter& painter) {
 
   constexpr int MAIN_GRADUATION_WIDTH{80};
   constexpr int SECONDARY_GRADUATION_WIDTH{50};
+  constexpr int MARGIN_GRADUATION_AND_TEXT{3};
 
   for (const auto& angle : graduation_angles_deg) {
     auto graduation_width = MAIN_GRADUATION_WIDTH;
@@ -160,12 +160,20 @@ void PrimaryFlightDisplay::drawAnglesGraduations(QPainter& painter) {
       graduation_width = SECONDARY_GRADUATION_WIDTH;
     }
 
+    int graduation_height_px = angle * m_pfd_pitch_resolution;
+
+    QString text = QString::number(-angle);
+    QFontMetrics fm(painter.font());
+    QRect textRect = fm.boundingRect(text);
+    textRect.moveCenter(QPoint(m_center_x, graduation_height_px));
+    painter.drawText(textRect, Qt::AlignCenter, text);
+
     const int graduation_left_px{m_center_x - graduation_width / 2};
     const int graduation_right_px{m_center_x + graduation_width / 2};
 
-    int graduation_height_px = angle * m_pfd_pitch_resolution;
     QPoint left_point(graduation_left_px, graduation_height_px);
     QPoint right_point(graduation_right_px, graduation_height_px);
-    painter.drawLine(left_point, right_point);
+    painter.drawLine(left_point, QPoint(textRect.left() - MARGIN_GRADUATION_AND_TEXT, graduation_height_px));
+    painter.drawLine(QPoint(textRect.right() + MARGIN_GRADUATION_AND_TEXT, graduation_height_px), right_point);
   }
 }
