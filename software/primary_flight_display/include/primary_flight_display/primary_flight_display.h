@@ -9,7 +9,7 @@
 struct PrimaryFlightDisplayConfig {
   // Global instrument parameter
   int widget_minimum_height{400};    ///< Minimum width of the PFD
-  int widget_minimum_widht{400};     ///< Minimum width of the PFD
+  int widget_minimum_width{400};     ///< Minimum width of the PFD
   double pfd_field_of_view_deg{60};  ///< Field of View of instrument (difference between max and min angle visible);
 
   QColor outer_circle_color{Qt::black};

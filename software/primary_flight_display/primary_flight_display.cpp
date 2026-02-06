@@ -19,7 +19,7 @@ int toSixteenthOfDegree(int degree) {
 PrimaryFlightDisplay::PrimaryFlightDisplay(QWidget* parent, PrimaryFlightDisplayConfig config)
     : QWidget(parent), m_config(config) {
   this->setMinimumHeight(m_config.widget_minimum_height);
-  this->setMinimumWidth(m_config.widget_minimum_widht);
+  this->setMinimumWidth(m_config.widget_minimum_width);
 }
 PrimaryFlightDisplay::~PrimaryFlightDisplay() {
 }
@@ -169,10 +169,10 @@ void PrimaryFlightDisplay::drawAnglesGraduations(QPainter& painter) {
     int graduation_height_px = angle * m_pfd_pitch_resolution;
 
     QString text = QString::number(-angle);
-    QFontMetrics fm(painter.font());
-    QRect textRect = fm.boundingRect(text);
-    textRect.moveCenter(QPoint(m_center_x, graduation_height_px));
-    painter.drawText(textRect, Qt::AlignCenter, text);
+    QFontMetrics font_metrrics(painter.font());
+    QRect text_rect = font_metrrics.boundingRect(text);
+    text_rect.moveCenter(QPoint(m_center_x, graduation_height_px));
+    painter.drawText(text_rect, Qt::AlignCenter, text);
 
     const int graduation_left_px{m_center_x - graduation_width / 2};
     const int graduation_right_px{m_center_x + graduation_width / 2};
@@ -180,8 +180,8 @@ void PrimaryFlightDisplay::drawAnglesGraduations(QPainter& painter) {
     QPoint left_point(graduation_left_px, graduation_height_px);
     QPoint right_point(graduation_right_px, graduation_height_px);
     painter.drawLine(left_point,
-                     QPoint(textRect.left() - m_config.gap_between_text_and_graduation, graduation_height_px));
-    painter.drawLine(QPoint(textRect.right() + m_config.gap_between_text_and_graduation, graduation_height_px),
+                     QPoint(text_rect.left() - m_config.gap_between_text_and_graduation, graduation_height_px));
+    painter.drawLine(QPoint(text_rect.right() + m_config.gap_between_text_and_graduation, graduation_height_px),
                      right_point);
   }
 }
