@@ -37,7 +37,8 @@ struct PrimaryFlightDisplayConfig {
   QColor ground_color_at_veritcal{QColor(150, 75, 0)};  ///< Color of the ground near vertical
 
   // Yaw display
-  int yaw_indicator_size{15};  ///< Size of the triangle incdicating Yaw
+  int yaw_indicator_size{15};              ///< Size of the triangle incdicating Yaw
+  QColor yaw_indicator_color{Qt::yellow};  ///< Size of the color indicator
 };
 
 class PrimaryFlightDisplay : public QWidget {

@@ -5,11 +5,11 @@
 #include <qtransform.h>
 #include <qwidget.h>
 
-#include <QDebug>
 #include <QPainter>
 #include <QPainterPath>
 #include <QRect>
 #include <vector>
+
 namespace {
 int toSixteenthOfDegree(int degree) {
   return 16 * degree;
@@ -85,14 +85,16 @@ void PrimaryFlightDisplay::drawOuterCircle(QPainter& painter) {
 
 void PrimaryFlightDisplay::drawYawIndicator(QPainter& painter) {
   painter.save();
-  auto top_point_y{m_center_y};
-  QPoint top_of_triangle(0, top_point_y);
-  QPoint bottom_left_triangle(-m_config.yaw_indicator_size, top_point_y - m_config.yaw_indicator_size);
-  QPoint bottom_right_triangle(m_config.yaw_indicator_size, top_point_y - m_config.yaw_indicator_size);
-
+  auto top_point_y{-m_center_y};
   auto yaw_angle = m_quaternion.toEulerAngles().y();
   painter.translate(m_center_point);
   painter.rotate(static_cast<qreal>(yaw_angle));
+  painter.setPen(Qt::NoPen);
+  painter.setBrush(QColor(m_config.yaw_indicator_color));
+
+  QPoint top_of_triangle(0, top_point_y);
+  QPoint bottom_left_triangle(-m_config.yaw_indicator_size, top_point_y + m_config.yaw_indicator_size);
+  QPoint bottom_right_triangle(m_config.yaw_indicator_size, top_point_y + m_config.yaw_indicator_size);
   painter.drawPolygon(QPolygon({top_of_triangle, bottom_left_triangle, bottom_right_triangle}));
 
   painter.restore();
