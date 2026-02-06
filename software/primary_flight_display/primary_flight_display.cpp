@@ -16,9 +16,10 @@ int toSixteenthOfDegree(int degree) {
 }
 
 }  // namespace
-PrimaryFlightDisplay::PrimaryFlightDisplay(QWidget* parent) : QWidget(parent) {
-  this->setMinimumHeight(400);
-  this->setMinimumWidth(400);
+PrimaryFlightDisplay::PrimaryFlightDisplay(QWidget* parent, PrimaryFlightDisplayConfig config)
+    : QWidget(parent), m_config(config) {
+  this->setMinimumHeight(m_config.widget_minimum_height);
+  this->setMinimumWidth(m_config.widget_minimum_widht);
 }
 PrimaryFlightDisplay::~PrimaryFlightDisplay() {
 }
@@ -31,48 +32,44 @@ void PrimaryFlightDisplay::updateAttitude(const QQuaternion& quaternion) noexcep
 void PrimaryFlightDisplay::paintEvent(QPaintEvent* event) {
   Q_UNUSED(event);
 
+  updateParameters();
+
   QPainter painter(this);
-  m_radius = qMin(width(), height()) / 2;
-  m_center_x = width() / 2;
-  m_center_y = height() / 2;
-  m_center_point.setX(m_center_x);
-  m_center_point.setY(m_center_y);
-  m_pfd_pitch_resolution = static_cast<double>(2 * m_radius) / m_pfd_field_of_view_deg;
-  m_left_x = m_center_x - m_radius;
-  m_right_x = m_center_x + m_radius;
-
-  // m_left_x=-m_radius;
-  // m_right_x=m_radius;
-
   drawPitchIndictator(painter);
   drawAircraftShape(painter);
   drawOuterCircle(painter);
   drawYawIndicator(painter);
 }
 
-void PrimaryFlightDisplay::drawAircraftShape(QPainter& painter) {
-  constexpr int CENTER_DOT_DIAMETER{5};
-  constexpr int GAP_BETWEEN_WINGS{20};
-  constexpr int WING_LENGTH{100};
-  constexpr int LENGTH_OF_GEAR_LEG{10};
+void PrimaryFlightDisplay::updateParameters() {
+  m_radius = qMin(width(), height()) / 2;
+  m_center_x = width() / 2;
+  m_center_y = height() / 2;
+  m_center_point.setX(m_center_x);
+  m_center_point.setY(m_center_y);
+  m_pfd_pitch_resolution = static_cast<double>(2 * m_radius) / m_config.pfd_field_of_view_deg;
+  m_left_x = m_center_x - m_radius;
+  m_right_x = m_center_x + m_radius;
+}
 
-  painter.setBrush(QBrush(Qt::darkGreen));
-  painter.drawEllipse(m_center_point, CENTER_DOT_DIAMETER, CENTER_DOT_DIAMETER);
+void PrimaryFlightDisplay::drawAircraftShape(QPainter& painter) {
+  painter.setBrush(QBrush(m_config.aircraft_symbol_color));
+  painter.drawEllipse(m_center_point, m_config.center_dot_diameter, m_config.center_dot_diameter);
 
   painter.setBrush(Qt::NoBrush);
-  painter.setPen(QPen(Qt::darkGreen, 10));
+  painter.setPen(QPen(m_config.aircraft_symbol_color, m_config.aircraft_symbol_thickness));
 
   // Left wing
-  QPoint exterior_point_wing_left(qMax(0, m_center_x - GAP_BETWEEN_WINGS - WING_LENGTH), m_center_y);
-  QPoint interior_point_wing_left(qMax(0, m_center_x - GAP_BETWEEN_WINGS), m_center_y);
-  QPoint lower_gear_leg_left(interior_point_wing_left.x(), m_center_point.y() + LENGTH_OF_GEAR_LEG);
+  QPoint exterior_point_wing_left(qMax(0, m_center_x - m_config.gap_between_wings - m_config.wing_length), m_center_y);
+  QPoint interior_point_wing_left(qMax(0, m_center_x - m_config.gap_between_wings), m_center_y);
+  QPoint lower_gear_leg_left(interior_point_wing_left.x(), m_center_point.y() + m_config.length_of_gear_leg);
   painter.drawLine(exterior_point_wing_left, interior_point_wing_left);
   painter.drawLine(interior_point_wing_left, lower_gear_leg_left);
 
   // right wing
-  QPoint interior_point_wing_right(qMin(m_center_x + m_radius, m_center_x + GAP_BETWEEN_WINGS), m_center_y);
-  QPoint exterior_point_wing_right(qMin(m_center_x + GAP_BETWEEN_WINGS + WING_LENGTH, m_center_x + m_radius),
-                                   m_center_y);
+  QPoint interior_point_wing_right(qMin(m_center_x + m_radius, m_center_x + m_config.gap_between_wings), m_center_y);
+  QPoint exterior_point_wing_right(
+      qMin(m_center_x + m_config.gap_between_wings + m_config.wing_length, m_center_x + m_radius), m_center_y);
   QPoint lower_gear_leg_right(interior_point_wing_right.x(), lower_gear_leg_left.y());
   painter.drawLine(interior_point_wing_right, exterior_point_wing_right);
   painter.drawLine(interior_point_wing_right, lower_gear_leg_right);
@@ -82,7 +79,7 @@ void PrimaryFlightDisplay::drawOuterCircle(QPainter& painter) {
   QPainterPath outer_circle_path;
   outer_circle_path.addEllipse(m_center_point, m_radius, m_radius);
   painter.setBrush(Qt::NoBrush);
-  painter.setPen(QPen(Qt::black, 5));
+  painter.setPen(QPen(m_config.outer_circle_color, m_config.outer_circle_thickness));
   painter.drawPath(outer_circle_path);
 }
 
@@ -90,8 +87,8 @@ void PrimaryFlightDisplay::drawYawIndicator(QPainter& painter) {
   painter.save();
   auto top_point_y{m_center_y};
   QPoint top_of_triangle(0, top_point_y);
-  QPoint bottom_left_triangle(-15, top_point_y - 15);
-  QPoint bottom_right_triangle(+15, top_point_y - 15);
+  QPoint bottom_left_triangle(-m_config.yaw_indicator_size, top_point_y - m_config.yaw_indicator_size);
+  QPoint bottom_right_triangle(m_config.yaw_indicator_size, top_point_y - m_config.yaw_indicator_size);
 
   auto yaw_angle = m_quaternion.toEulerAngles().y();
   painter.translate(m_center_point);
@@ -132,24 +129,23 @@ void PrimaryFlightDisplay::drawPitchIndictator(QPainter& painter) {
   painter.setPen(Qt::NoPen);
 
   QLinearGradient sky_gradient(sky_top_middle, QPoint(sky_top_middle.x(), horizontal_line_right.y()));
-  sky_gradient.setColorAt(0.0, Qt::blue);
-  sky_gradient.setColorAt(0.5, Qt::black);
-  sky_gradient.setColorAt(1.0, Qt::blue);
+  sky_gradient.setColorAt(0.0, m_config.sky_color_at_horizon);
+  sky_gradient.setColorAt(0.5, m_config.sky_color_at_veritcal);
+  sky_gradient.setColorAt(1.0, m_config.sky_color_at_horizon);
   painter.setBrush(sky_gradient);
   painter.drawRect(QRect(sky_top_left, horizontal_line_right));
-  painter.setBrush(Qt::NoBrush);
 
   // Draw ground
   QLinearGradient ground_gradient(QPoint(ground_bottom_middle.x(), horizontal_line_right.y()), ground_bottom_middle);
-  ground_gradient.setColorAt(0.0, QColor(165, 42, 42));
-  ground_gradient.setColorAt(0.5, QColor(150, 75, 0));
-  ground_gradient.setColorAt(1.0, QColor(165, 42, 42));
+  ground_gradient.setColorAt(0.0, m_config.ground_color_at_horizon);
+  ground_gradient.setColorAt(0.5, m_config.ground_color_at_veritcal);
+  ground_gradient.setColorAt(1.0, m_config.ground_color_at_horizon);
   painter.setBrush(ground_gradient);
   painter.drawRect(QRect(horizontal_line_left, ground_bottom_right));
   painter.setBrush(Qt::NoBrush);
 
   // Draw horizon and graduations
-  painter.setPen(QPen(Qt::white, 2));
+  painter.setPen(QPen(m_config.graduation_color, m_config.graduation_thickness));
   painter.drawLine(horizontal_line_left, horizontal_line_right);
   drawAnglesGraduations(painter);
 
@@ -164,14 +160,10 @@ void PrimaryFlightDisplay::drawAnglesGraduations(QPainter& painter) {
     graduation_angles_deg.emplace_back(graduation_angle_deg);
   }
 
-  constexpr int MAIN_GRADUATION_WIDTH{80};
-  constexpr int SECONDARY_GRADUATION_WIDTH{50};
-  constexpr int MARGIN_GRADUATION_AND_TEXT{3};
-
   for (const auto& angle : graduation_angles_deg) {
-    auto graduation_width = MAIN_GRADUATION_WIDTH;
+    auto graduation_width = m_config.main_graduation_width;
     if ((angle % 10) != 0) {
-      graduation_width = SECONDARY_GRADUATION_WIDTH;
+      graduation_width = m_config.secondary_graduation_width;
     }
 
     int graduation_height_px = angle * m_pfd_pitch_resolution;
@@ -187,7 +179,9 @@ void PrimaryFlightDisplay::drawAnglesGraduations(QPainter& painter) {
 
     QPoint left_point(graduation_left_px, graduation_height_px);
     QPoint right_point(graduation_right_px, graduation_height_px);
-    painter.drawLine(left_point, QPoint(textRect.left() - MARGIN_GRADUATION_AND_TEXT, graduation_height_px));
-    painter.drawLine(QPoint(textRect.right() + MARGIN_GRADUATION_AND_TEXT, graduation_height_px), right_point);
+    painter.drawLine(left_point,
+                     QPoint(textRect.left() - m_config.gap_between_text_and_graduation, graduation_height_px));
+    painter.drawLine(QPoint(textRect.right() + m_config.gap_between_text_and_graduation, graduation_height_px),
+                     right_point);
   }
 }
