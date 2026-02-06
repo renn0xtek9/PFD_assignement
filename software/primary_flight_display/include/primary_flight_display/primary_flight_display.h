@@ -35,6 +35,8 @@ class PrimaryFlightDisplay : public QWidget {
   void drawPitchIndictator(QPainter& painter);
   void drawAnglesGraduations(QPainter& painter);
 
+  void applyRoll(QPainter& painter);
+
   void clipPainterInsideInstrument(QPainter& painter);
 };
 #endif

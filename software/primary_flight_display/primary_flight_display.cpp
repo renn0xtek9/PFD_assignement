@@ -41,6 +41,9 @@ void PrimaryFlightDisplay::paintEvent(QPaintEvent* event) {
   m_left_x = m_center_x - m_radius;
   m_right_x = m_center_x + m_radius;
 
+  // m_left_x=-m_radius;
+  // m_right_x=m_radius;
+
   drawPitchIndictator(painter);
   drawAircraftShape(painter);
   drawOuterCircle(painter);
@@ -106,10 +109,16 @@ void PrimaryFlightDisplay::clipPainterInsideInstrument(QPainter& painter) {
 void PrimaryFlightDisplay::drawPitchIndictator(QPainter& painter) {
   painter.save();
   auto pitch_angle_deg = m_quaternion.toEulerAngles().x();
-  qDebug() << " Pitch angle  " << pitch_angle_deg;
+  auto roll_angle_deg = m_quaternion.toEulerAngles().z();
+  qDebug() << " Pitch angle  " << pitch_angle_deg << " Roll " << roll_angle_deg;
   const double horizon_height_px{m_center_y + pitch_angle_deg * m_pfd_pitch_resolution};
 
   clipPainterInsideInstrument(painter);
+
+  painter.translate(m_center_point);
+  painter.rotate(roll_angle_deg);
+  painter.translate(-m_center_point);
+  painter.translate(0, static_cast<qreal>(horizon_height_px));
 
   QPoint horizontal_line_left(m_left_x, 0);
   QPoint horizontal_line_right(m_right_x, 0);
@@ -121,8 +130,6 @@ void PrimaryFlightDisplay::drawPitchIndictator(QPainter& painter) {
 
   // Draw sky
   painter.setPen(Qt::NoPen);
-
-  painter.translate(0, static_cast<qreal>(horizon_height_px));
 
   QLinearGradient sky_gradient(sky_top_middle, QPoint(sky_top_middle.x(), horizontal_line_right.y()));
   sky_gradient.setColorAt(0.0, Qt::blue);
