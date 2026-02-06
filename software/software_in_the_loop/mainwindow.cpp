@@ -1,12 +1,11 @@
 #include "mainwindow.h"
 
-#include <qboxlayout.h>
-#include <qwidget.h>
+#include <primary_flight_display/primary_flight_display.h>
 
+#include <QBoxLayout>
 #include <QHBoxLayout>
 #include <QWidget>
 
-#include "primary_flight_display/primary_flight_display.h"
 #include "sil_command_panel.h"
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {

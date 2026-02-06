@@ -1,12 +1,9 @@
 #include "sil_command_panel.h"
 
-#include <qboxlayout.h>
-#include <qnamespace.h>
-#include <qquaternion.h>
-#include <qwidget.h>
-
+#include <QQuaternion>
 #include <QSlider>
 #include <QVBoxLayout>
+#include <QWidget>
 
 SilCommandPanel::SilCommandPanel(QWidget* parent) : QWidget(parent) {
   m_roll_angle_slider = initializeAngleSlider(-180, 180);

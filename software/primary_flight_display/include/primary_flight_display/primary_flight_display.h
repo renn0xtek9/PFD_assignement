@@ -1,9 +1,7 @@
 #ifndef PRIMARY_FLIGHT_DISPLAY_H
 #define PRIMARY_FLIGHT_DISPLAY_H
-#include <qcolor.h>
-#include <qnamespace.h>
-#include <qquaternion.h>
-
+#include <QColor>
+#include <QQuaternion>
 #include <QWidget>
 
 struct PrimaryFlightDisplayConfig {

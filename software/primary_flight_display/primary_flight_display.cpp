@@ -1,13 +1,11 @@
 #include <primary_flight_display/primary_flight_display.h>
-#include <qbrush.h>
-#include <qglobal.h>
-#include <qnamespace.h>
-#include <qtransform.h>
-#include <qwidget.h>
 
+#include <QBrush>
 #include <QPainter>
 #include <QPainterPath>
 #include <QRect>
+#include <QTransform>
+#include <QWidget>
 #include <vector>
 
 namespace {
