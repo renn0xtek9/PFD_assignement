@@ -18,9 +18,9 @@ class SilCommandPanel : public QWidget {
   QSlider* m_yaw_angle_slider{};
   QSlider* m_pitch_angle_slider{};
 
-  QLabel m_roll_label{"Roll angle: "};
-  QLabel m_yaw_label{"Yaw angle: "};
-  QLabel m_pitch_label{"Pitch angle: "};
+  QLabel m_roll_label{};
+  QLabel m_yaw_label{};
+  QLabel m_pitch_label{};
 
   QSlider* initializeAngleSlider(double min, double max);
 
