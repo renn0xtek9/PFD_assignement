@@ -10,11 +10,10 @@
 #include "sil_command_panel.h"
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
-  m_sil_command_panel = new SilCommandPanel(this);
-  m_primay_flight_display = new PrimaryFlightDisplay(this);
-
   this->setWindowTitle("Primary Flight Display validation");
+  m_sil_command_panel = new SilCommandPanel(this);
 
+  m_primay_flight_display = new PrimaryFlightDisplay(this);
   connect(m_sil_command_panel, &SilCommandPanel::attitudeChanged, m_primay_flight_display,
           &PrimaryFlightDisplay::updateAttitude);
 

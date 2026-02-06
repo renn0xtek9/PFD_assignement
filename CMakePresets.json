@@ -1,0 +1,50 @@
+{
+  "version": 10,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 28,
+    "patch": 3
+  },
+  "configurePresets": [
+    {
+      "name": "x86-Release-Clang-18-linux",
+      "displayName": "x86-Release-Clang-18-linux",
+      "description": "x86-Release-Clang-18-linux",
+      "generator": "Unix Makefiles",
+      "binaryDir": "${sourceDir}/build/",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": {
+          "type": "STRING",
+          "value": "Release"
+        },
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      },
+      "vendor": {
+        "maxime_haselbauer": {
+          "autoFormat": true
+        }
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "x86-Release-Clang-18-linux",
+      "configurePreset": "x86-Release-Clang-18-linux"
+    }
+  ],
+  "workflowPresets": [
+    {
+      "name": "x86-Release-Clang-18-linux",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "x86-Release-Clang-18-linux"
+        },
+        {
+          "type": "build",
+          "name": "x86-Release-Clang-18-linux"
+        }
+      ]
+    }
+  ]
+}
