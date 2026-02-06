@@ -1,21 +1,21 @@
 # Primary flight display widget
 
-This widget implements a very basic primary flight display in C++ with Qt6
+This widget implements a very basic primary flight display in C++ with Qt6.
 It uses pure C++ API of Qt (i.e. QPainter in a QWidget).
 This is chosen so to avoid runtime interpretation like with a QML runner.
 
 ## How to build run and try
 
-There is a "software in the loop" environment (a simple GUI called) under `software/software_in_the_loop`
-This enable users to manually mocks data that would come from the flight computer.
-To run the "software in the loop" use the Dev Container feature from VSCode (`CTRL+SHIFT+P` then "Dev Container: Reopen in container").
+There is a "software in the loop" environment (a simple GUI) under `software/software_in_the_loop`
+This enables users to manually mocks data that would come from the flight computer.
+To run the "software in the loop" use the *Dev Container* feature from VSCode (`CTRL+SHIFT+P` then *"Dev Container: Reopen in Container"*).
 This will spare pain with installations of required dependency on host system.
 
 Click on select the preset.
 
 ![PFD in sil](docs/select_preset.png "Select preset picture")
 
-And then run the `software_in_the_loop` target.
+And then run the `software_in_the_loop` target. (Use the CMake extension toolbar at bottom of VSCode).
 
 **Note** the X11 forwarding is already enable by the [.devcontainer.json](.devcontainer/devcontainer.json#L4).  
 **It may be required to run `xhost+` on hosts**
@@ -25,7 +25,7 @@ And then run the `software_in_the_loop` target.
 ## How to integrate
 
 The widget is available as a library under `software/primary_flight_display/`
-The simply implements this slots.
+It simply implements this slots.
 
 ```cpp
 void updateAttitude(const QQuaternion& quaternion) noexcept;
